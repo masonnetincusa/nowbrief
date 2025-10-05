@@ -44,4 +44,10 @@ cat > "$BASE/res/xml/accessibility_config.xml" << 'EOF'
     android:settingsActivity="com.mason.injector.smartbrief.SettingsActivity" />
 EOF
 
+progress "🧼 Validating and repairing XML..."
+find "$BASE/res" -type f -name "*.xml" -exec grep -l 'android:[a-zA-Z]*="[^"]*$' {} \; | while read -r file; do
+  echo "🔧 Fixing malformed XML: $file"
+  sed -i 's/\(android:[a-zA-Z]*="\([^"]*\)\)$/\1"/g' "$file"
+done
+
 progress "✅ Payload injection complete. Ready to build."
