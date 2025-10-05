@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
 echo -e "\e[1;36m=============================="
-echo -e "🚀  Get Now Brief  Now!"
+echo -e "🚀  SmartBrief Injector: Now Brief Activation"
 echo -e "==============================\e[0m"
 sleep 1
 
@@ -74,6 +74,7 @@ progress "📦 Decoding base APK for rebuild..."
 apktool d "$SRC_APK" -o "$BASE" -f
 
 progress "📁 Injecting layouts and XML..."
+mkdir -p "$BASE/res/layout" "$BASE/res/xml"
 cp -r "$WORKDIR/res/layout" "$BASE/res/"
 cp -r "$WORKDIR/xml" "$BASE/res/"
 
@@ -90,7 +91,7 @@ progress "🔨 Building SmartBrief Injector APK..."
 apktool b "$BASE" -o "$OUT_APK"
 
 if [ -f "$OUT_APK" ]; then
-  echo -e "\e[43dcd9a7-70db-4a1f-b0ae-981daa162054](https://github.com/Vove7/Android-Accessibility-Api/tree/857b0c4a43e5df82cb1ad7156265d9ff9108b399/ReadMe.md?citationMarker=43dcd9a7-70db-4a1f-b0ae-981daa162054 "1")[1;32m✅ Build complete: $OUT_APK\e[0m"
+  echo -e "\e[1;32m✅ Build complete: $OUT_APK\e[0m"
 else
   echo -e "\e[1;31m❌ Build failed: APK not found\e[0m"
   exit 1
