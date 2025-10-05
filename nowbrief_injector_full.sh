@@ -2,7 +2,9 @@
 
 set -e
 
-LOGFILE=~/nowbrief/injector_log.txt
+# Ensure Termux has access to Downloads
+mkdir -p ~/storage/downloads
+LOGFILE=~/storage/downloads/injector_log.txt
 APK_OUT=~/nowbrief_injector/SmartSuggestionsInjector.apk
 INJECTOR_BASE=~/nowbrief_injector/base
 
@@ -19,7 +21,7 @@ progress "Navigating to injector base"
 cd "$INJECTOR_BASE" || { log "Injector base not found"; exit 1; }
 
 progress "Running Galaxy AI string repair"
-bash ~/nowbrief/repair_galaxy_ai_strings.sh >> "$LOGFILE" 2>&1
+bash ~/nowbrief/repair_galaxy_ai_strings.sh >> "$LOGFILE" 2>&1 || log "Repair script failed"
 
 progress "Validating XML files"
 find res/ -name "*.xml" -exec xmllint --noout {} \; >> "$LOGFILE" 2>&1 || {
