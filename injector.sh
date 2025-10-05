@@ -69,6 +69,8 @@ cat > "$WORKDIR/xml/accessibility_config.xml" << 'EOF'
 EOF
 
 progress "📲 Installing signed APK..."
+progress "🔨 Building SmartBrief Injector APK..."
+apktool b "$WORKDIR" -o "$OUT_APK"
 adb install -r "$OUT_APK"
 adb shell settings put secure enabled_accessibility_services com.mason.injector.smartbrief/com.mason.injector.smartbrief.BriefService
 adb shell settings put secure accessibility_enabled 1
