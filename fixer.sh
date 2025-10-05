@@ -43,24 +43,6 @@ cat > "$WORKDIR/smali/com/mason/injector/smartbrief/BriefService.smali" << 'EOF'
 EOF
 
 progress "🧩 Creating manifest and config..."
-cat > "$WORKDIR/AndroidManifest.xml" << 'EOF'
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mason.injector.smartbrief"
-    android:versionCode="1"
-    android:versionName="1.0">
-    <application android:label="SmartBrief Injector">
-        <service android:name=".smartbrief.BriefService"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
-            <meta-data android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_config" />
-        </service>
-    </application>
-</manifest>
-EOF
-
 cat > "$WORKDIR/xml/accessibility_config.xml" << 'EOF'
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     android:accessibilityEventTypes="typeAllMask"
@@ -81,8 +63,18 @@ cp -r "$WORKDIR/xml" "$BASE/res/"
 progress "🧠 Injecting smali logic..."
 cp -r "$WORKDIR/smali" "$BASE/"
 
-progress "🧩 Replacing manifest..."
-cp "$WORKDIR/AndroidManifest.xml" "$BASE/"
+progress "🧩 Modifying manifest in-place..."
+sed -i '/<application/,/<\/application>/c\
+        <application android:label="SmartBrief Injector">\
+            <service android:name=".smartbrief.BriefService"\
+                android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">\
+                <intent-filter>\
+                    <action android:name="android.accessibilityservice.AccessibilityService" />\
+                </intent-filter>\
+                <meta-data android:name="android.accessibilityservice"\
+                    android:resource="@xml/accessibility_config" />\
+            </service>\
+        </application>' "$BASE/AndroidManifest.xml"
 
 progress "🧼 Auto-repairing malformed XML..."
 find "$BASE/res" -type f -name "*.xml" -exec sed -i 's/\(android:[a-zA-Z]*="\([^"]*\)\)$/\1"/g' {} +
